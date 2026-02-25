@@ -1,25 +1,54 @@
+# MewHome
 
-Installation information
-=======
+Server-side NeoForge mod for Minecraft 1.21.1. Replaces vanilla bed spawn mechanics with a simple home system.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## How it works
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+Place a bed — that's your home. No clicking beds to set spawn. No `/sethome`. Just place it.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## Commands
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+| Command | Who | What |
+|---------|-----|------|
+| `/home` | Everyone | Teleport to your bed |
+| `/spawn` | Everyone | Teleport to world spawn |
+| `/sethome` | Everyone | Tells you to place a bed |
+| `/setspawn` | OP only | Set world spawn to your current position |
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+## Bed rules
+
+- **Place a bed** — it becomes your home, you get a confirmation message
+- **Break your own bed** — allowed, home point is removed with a warning
+- **Break someone else's bed** — blocked, only OP can do this
+- **OP breaks someone's bed** — allowed, owner gets notified
+- **Click/sleep in any bed** — does NOT change your spawn point
+- **Die with a bed** — respawn at your bed
+- **Die without a bed** — respawn at world spawn
+
+## Localization
+
+The mod resolves translations server-side based on each player's client language. Ships with:
+- English (`en_us`)
+- Russian (`ru_ru`)
+
+Any other language falls back to English. Adding a new language is one JSON file in `assets/mewhome/lang/`.
+
+## Installation
+
+Server-only mod. Drop the JAR into the server's `mods/` folder. Clients do not need it.
+
+### Requirements
+- Minecraft 1.21.1
+- NeoForge 21.1+
+
+## Building from source
+
+```
+./gradlew build
+```
+
+JAR output: `build/libs/mewhome-<version>.jar`
+
+## License
+
+[MIT](LICENSE)
