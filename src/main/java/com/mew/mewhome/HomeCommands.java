@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +38,11 @@ public class HomeCommands {
                     sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.sethome_info", ChatFormatting.YELLOW));
                     return 1;
                 })
+        );
+
+        // /spawn — teleport to world spawn
+        dispatcher.register(Commands.literal("spawn")
+                .executes(ctx -> executeSpawn(ctx.getSource().getPlayerOrException()))
         );
     }
 
@@ -75,6 +81,18 @@ public class HomeCommands {
         player.teleportTo(level, teleportPos.x, teleportPos.y, teleportPos.z, player.getYRot(), player.getXRot());
 
         player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.teleported", ChatFormatting.GREEN));
+        return 1;
+    }
+
+    private static int executeSpawn(ServerPlayer player) {
+        ServerLevel overworld = player.server.overworld();
+        BlockPos spawnPos = overworld.getSharedSpawnPos();
+        double x = spawnPos.getX() + 0.5;
+        double y = spawnPos.getY();
+        double z = spawnPos.getZ() + 0.5;
+
+        player.teleportTo(overworld, x, y, z, player.getYRot(), player.getXRot());
+        player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.spawn_tp", ChatFormatting.GREEN));
         return 1;
     }
 }

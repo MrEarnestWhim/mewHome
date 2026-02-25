@@ -81,25 +81,34 @@ public class HomeEventHandler {
         Optional<UUID> owner = manager.getHomeOwnerAt(headPos, dimension);
         if (owner.isEmpty()) return; // Not a home bed — allow breaking normally
 
-        // Only OP (permission level 2+) can break home beds
-        if (!event.getPlayer().hasPermissions(2)) {
-            event.setCanceled(true);
+        UUID ownerId = owner.get();
+        UUID breakerId = event.getPlayer().getUUID();
+
+        // Owner can break their own bed
+        if (breakerId.equals(ownerId)) {
+            manager.removeHome(ownerId);
             if (event.getPlayer() instanceof ServerPlayer sp) {
-                sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.bed_protected", ChatFormatting.RED));
+                sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.home_destroyed", ChatFormatting.RED));
             }
             return;
         }
 
-        // OP is breaking it — clear the owner's home data
-        UUID ownerId = owner.get();
-        manager.removeHome(ownerId);
+        // OP can break anyone's home bed
+        if (event.getPlayer().hasPermissions(2)) {
+            manager.removeHome(ownerId);
+            ServerPlayer ownerPlayer = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+            if (ownerPlayer != null) {
+                ownerPlayer.sendSystemMessage(
+                        ServerI18n.translate(ownerPlayer, "mewhome.message.bed_broken", ChatFormatting.RED)
+                );
+            }
+            return;
+        }
 
-        // Notify the owner if online
-        ServerPlayer ownerPlayer = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
-        if (ownerPlayer != null) {
-            ownerPlayer.sendSystemMessage(
-                    ServerI18n.translate(ownerPlayer, "mewhome.message.bed_broken", ChatFormatting.RED)
-            );
+        // Anyone else — block
+        event.setCanceled(true);
+        if (event.getPlayer() instanceof ServerPlayer sp) {
+            sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.bed_protected", ChatFormatting.RED));
         }
     }
 

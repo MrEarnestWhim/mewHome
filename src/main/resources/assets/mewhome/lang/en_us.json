@@ -5,5 +5,7 @@
   "mewhome.message.sethome_info": "Place a bed — that will be your home point",
   "mewhome.message.bed_protected": "This bed is someone's home! Only an operator can break it.",
   "mewhome.message.bed_broken": "Your home bed was broken! Place a new bed.",
-  "mewhome.message.world_unavailable": "World unavailable"
+  "mewhome.message.world_unavailable": "World unavailable",
+  "mewhome.message.home_destroyed": "WARNING! You destroyed your home point!",
+  "mewhome.message.spawn_tp": "Teleported to spawn"
 }
