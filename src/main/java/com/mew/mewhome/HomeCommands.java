@@ -44,6 +44,12 @@ public class HomeCommands {
         dispatcher.register(Commands.literal("spawn")
                 .executes(ctx -> executeSpawn(ctx.getSource().getPlayerOrException()))
         );
+
+        // /setspawn — OP only, sets world spawn to current position
+        dispatcher.register(Commands.literal("setspawn")
+                .requires(source -> source.hasPermission(2))
+                .executes(ctx -> executeSetSpawn(ctx.getSource().getPlayerOrException()))
+        );
     }
 
     private static int executeHome(ServerPlayer player) {
@@ -93,6 +99,13 @@ public class HomeCommands {
 
         player.teleportTo(overworld, x, y, z, player.getYRot(), player.getXRot());
         player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.spawn_tp", ChatFormatting.GREEN));
+        return 1;
+    }
+
+    private static int executeSetSpawn(ServerPlayer player) {
+        BlockPos pos = player.blockPosition();
+        player.server.overworld().setDefaultSpawnPos(pos, player.getYRot());
+        player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.spawn_set", ChatFormatting.GREEN));
         return 1;
     }
 }

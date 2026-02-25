@@ -7,5 +7,6 @@
   "mewhome.message.bed_broken": "Your home bed was broken! Place a new bed.",
   "mewhome.message.world_unavailable": "World unavailable",
   "mewhome.message.home_destroyed": "WARNING! You destroyed your home point!",
-  "mewhome.message.spawn_tp": "Teleported to spawn"
+  "mewhome.message.spawn_tp": "Teleported to spawn",
+  "mewhome.message.spawn_set": "World spawn point set!"
 }

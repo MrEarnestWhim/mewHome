@@ -7,5 +7,6 @@
   "mewhome.message.bed_broken": "Ваша домашняя кровать была сломана! Поставьте новую кровать.",
   "mewhome.message.world_unavailable": "Мир недоступен",
   "mewhome.message.home_destroyed": "ВНИМАНИЕ! Вы сломали свою точку дома!",
-  "mewhome.message.spawn_tp": "Телепортация на спавн"
+  "mewhome.message.spawn_tp": "Телепортация на спавн",
+  "mewhome.message.spawn_set": "Точка спавна мира установлена!"
 }
