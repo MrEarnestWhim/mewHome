@@ -1,0 +1,81 @@
+package com.mew.mewhome;
+
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+import java.util.Optional;
+
+@EventBusSubscriber(modid = MewHome.MODID)
+public class HomeCommands {
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+
+        // /home — teleport to your bed
+        dispatcher.register(Commands.literal("home")
+                .executes(ctx -> executeHome(ctx.getSource().getPlayerOrException()))
+        );
+
+        // /sethome — inform player about bed mechanic
+        dispatcher.register(Commands.literal("sethome")
+                .executes(ctx -> {
+                    ctx.getSource().getPlayerOrException().sendSystemMessage(
+                            Component.literal("§eПоставьте кровать, это и будет ваша точка дома")
+                    );
+                    return 1;
+                })
+        );
+    }
+
+    private static int executeHome(ServerPlayer player) {
+        HomeManager manager = HomeManager.get(player.server);
+        Optional<HomeManager.HomeData> homeOpt = manager.getHome(player.getUUID());
+
+        if (homeOpt.isEmpty()) {
+            player.sendSystemMessage(Component.literal("§cСначала поставьте кровать"));
+            return 0;
+        }
+
+        HomeManager.HomeData home = homeOpt.get();
+        ServerLevel level = player.server.getLevel(home.dimension());
+        if (level == null) {
+            player.sendSystemMessage(Component.literal("§cМир недоступен"));
+            return 0;
+        }
+
+        // Validate bed still exists
+        BlockState bedState = level.getBlockState(home.pos());
+        if (!(bedState.getBlock() instanceof BedBlock)) {
+            manager.removeHome(player.getUUID());
+            player.sendSystemMessage(Component.literal("§cСначала поставьте кровать"));
+            return 0;
+        }
+
+        // Find safe standing position near the bed
+        Direction facing = bedState.getValue(BedBlock.FACING);
+        Optional<Vec3> standUpPos = BedBlock.findStandUpPosition(
+                EntityType.PLAYER, level, home.pos(), facing, 0f
+        );
+
+        Vec3 teleportPos = standUpPos.orElse(Vec3.atBottomCenterOf(home.pos().above()));
+
+        player.teleportTo(level, teleportPos.x, teleportPos.y, teleportPos.z, player.getYRot(), player.getXRot());
+
+        player.sendSystemMessage(Component.literal("§aТелепортация домой!"));
+        return 1;
+    }
+}
