@@ -1,0 +1,9 @@
+{
+  "mewhome.message.home_set": "Кровать установлена как ваш дом!",
+  "mewhome.message.no_home": "Сначала поставьте кровать",
+  "mewhome.message.teleported": "Телепортация домой!",
+  "mewhome.message.sethome_info": "Поставьте кровать, это и будет ваша точка дома",
+  "mewhome.message.bed_protected": "Эта кровать является чьим-то домом! Только оператор может её сломать.",
+  "mewhome.message.bed_broken": "Ваша домашняя кровать была сломана! Поставьте новую кровать.",
+  "mewhome.message.world_unavailable": "Мир недоступен"
+}

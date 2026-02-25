@@ -1,2 +1,9 @@
 {
+  "mewhome.message.home_set": "Bed set as your home!",
+  "mewhome.message.no_home": "Place a bed first",
+  "mewhome.message.teleported": "Teleported home!",
+  "mewhome.message.sethome_info": "Place a bed — that will be your home point",
+  "mewhome.message.bed_protected": "This bed is someone's home! Only an operator can break it.",
+  "mewhome.message.bed_broken": "Your home bed was broken! Place a new bed.",
+  "mewhome.message.world_unavailable": "World unavailable"
 }

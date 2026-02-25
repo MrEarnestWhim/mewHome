@@ -3,6 +3,7 @@ package com.mew.mewhome;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +48,7 @@ public class HomeEventHandler {
         HomeManager manager = HomeManager.get(player.server);
         manager.setHome(player.getUUID(), headPos, dimension);
 
-        player.sendSystemMessage(Component.literal("§aКровать установлена как ваш дом!"));
+        player.sendSystemMessage(Component.translatable("mewhome.message.home_set").withStyle(ChatFormatting.GREEN));
     }
 
     // =========================================================================
@@ -85,7 +86,7 @@ public class HomeEventHandler {
         if (!event.getPlayer().hasPermissions(2)) {
             event.setCanceled(true);
             event.getPlayer().sendSystemMessage(
-                    Component.literal("§cЭта кровать является чьим-то домом! Только оператор может её сломать.")
+                    Component.translatable("mewhome.message.bed_protected").withStyle(ChatFormatting.RED)
             );
             return;
         }
@@ -98,7 +99,7 @@ public class HomeEventHandler {
         ServerPlayer ownerPlayer = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
         if (ownerPlayer != null) {
             ownerPlayer.sendSystemMessage(
-                    Component.literal("§cВаша домашняя кровать была сломана! Поставьте новую кровать.")
+                    Component.translatable("mewhome.message.bed_broken").withStyle(ChatFormatting.RED)
             );
         }
     }

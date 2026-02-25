@@ -5,6 +5,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -34,7 +35,7 @@ public class HomeCommands {
         dispatcher.register(Commands.literal("sethome")
                 .executes(ctx -> {
                     ctx.getSource().getPlayerOrException().sendSystemMessage(
-                            Component.literal("§eПоставьте кровать, это и будет ваша точка дома")
+                            Component.translatable("mewhome.message.sethome_info").withStyle(ChatFormatting.YELLOW)
                     );
                     return 1;
                 })
@@ -46,14 +47,14 @@ public class HomeCommands {
         Optional<HomeManager.HomeData> homeOpt = manager.getHome(player.getUUID());
 
         if (homeOpt.isEmpty()) {
-            player.sendSystemMessage(Component.literal("§cСначала поставьте кровать"));
+            player.sendSystemMessage(Component.translatable("mewhome.message.no_home").withStyle(ChatFormatting.RED));
             return 0;
         }
 
         HomeManager.HomeData home = homeOpt.get();
         ServerLevel level = player.server.getLevel(home.dimension());
         if (level == null) {
-            player.sendSystemMessage(Component.literal("§cМир недоступен"));
+            player.sendSystemMessage(Component.translatable("mewhome.message.world_unavailable").withStyle(ChatFormatting.RED));
             return 0;
         }
 
@@ -61,7 +62,7 @@ public class HomeCommands {
         BlockState bedState = level.getBlockState(home.pos());
         if (!(bedState.getBlock() instanceof BedBlock)) {
             manager.removeHome(player.getUUID());
-            player.sendSystemMessage(Component.literal("§cСначала поставьте кровать"));
+            player.sendSystemMessage(Component.translatable("mewhome.message.no_home").withStyle(ChatFormatting.RED));
             return 0;
         }
 
@@ -75,7 +76,7 @@ public class HomeCommands {
 
         player.teleportTo(level, teleportPos.x, teleportPos.y, teleportPos.z, player.getYRot(), player.getXRot());
 
-        player.sendSystemMessage(Component.literal("§aТелепортация домой!"));
+        player.sendSystemMessage(Component.translatable("mewhome.message.teleported").withStyle(ChatFormatting.GREEN));
         return 1;
     }
 }
