@@ -2,7 +2,6 @@ package com.mew.mewhome;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -48,7 +47,7 @@ public class HomeEventHandler {
         HomeManager manager = HomeManager.get(player.server);
         manager.setHome(player.getUUID(), headPos, dimension);
 
-        player.sendSystemMessage(Component.translatable("mewhome.message.home_set").withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.home_set", ChatFormatting.GREEN));
     }
 
     // =========================================================================
@@ -85,9 +84,9 @@ public class HomeEventHandler {
         // Only OP (permission level 2+) can break home beds
         if (!event.getPlayer().hasPermissions(2)) {
             event.setCanceled(true);
-            event.getPlayer().sendSystemMessage(
-                    Component.translatable("mewhome.message.bed_protected").withStyle(ChatFormatting.RED)
-            );
+            if (event.getPlayer() instanceof ServerPlayer sp) {
+                sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.bed_protected", ChatFormatting.RED));
+            }
             return;
         }
 
@@ -99,7 +98,7 @@ public class HomeEventHandler {
         ServerPlayer ownerPlayer = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
         if (ownerPlayer != null) {
             ownerPlayer.sendSystemMessage(
-                    Component.translatable("mewhome.message.bed_broken").withStyle(ChatFormatting.RED)
+                    ServerI18n.translate(ownerPlayer, "mewhome.message.bed_broken", ChatFormatting.RED)
             );
         }
     }

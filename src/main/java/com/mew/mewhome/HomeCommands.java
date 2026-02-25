@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,9 +33,8 @@ public class HomeCommands {
         // /sethome — inform player about bed mechanic
         dispatcher.register(Commands.literal("sethome")
                 .executes(ctx -> {
-                    ctx.getSource().getPlayerOrException().sendSystemMessage(
-                            Component.translatable("mewhome.message.sethome_info").withStyle(ChatFormatting.YELLOW)
-                    );
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    sp.sendSystemMessage(ServerI18n.translate(sp, "mewhome.message.sethome_info", ChatFormatting.YELLOW));
                     return 1;
                 })
         );
@@ -47,14 +45,14 @@ public class HomeCommands {
         Optional<HomeManager.HomeData> homeOpt = manager.getHome(player.getUUID());
 
         if (homeOpt.isEmpty()) {
-            player.sendSystemMessage(Component.translatable("mewhome.message.no_home").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.no_home", ChatFormatting.RED));
             return 0;
         }
 
         HomeManager.HomeData home = homeOpt.get();
         ServerLevel level = player.server.getLevel(home.dimension());
         if (level == null) {
-            player.sendSystemMessage(Component.translatable("mewhome.message.world_unavailable").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.world_unavailable", ChatFormatting.RED));
             return 0;
         }
 
@@ -62,7 +60,7 @@ public class HomeCommands {
         BlockState bedState = level.getBlockState(home.pos());
         if (!(bedState.getBlock() instanceof BedBlock)) {
             manager.removeHome(player.getUUID());
-            player.sendSystemMessage(Component.translatable("mewhome.message.no_home").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.no_home", ChatFormatting.RED));
             return 0;
         }
 
@@ -76,7 +74,7 @@ public class HomeCommands {
 
         player.teleportTo(level, teleportPos.x, teleportPos.y, teleportPos.z, player.getYRot(), player.getXRot());
 
-        player.sendSystemMessage(Component.translatable("mewhome.message.teleported").withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(ServerI18n.translate(player, "mewhome.message.teleported", ChatFormatting.GREEN));
         return 1;
     }
 }

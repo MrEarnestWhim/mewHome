@@ -12,6 +12,7 @@ public class MewHome {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MewHome(IEventBus modEventBus, ModContainer modContainer) {
+        ServerI18n.init();
         LOGGER.info("MewHome loaded!");
     }
 }
